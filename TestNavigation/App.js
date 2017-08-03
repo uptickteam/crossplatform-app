@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Platform, TextInput, Button, Alert, ScrollView } from 'react-native';
+import { AppRegistry, StyleSheet, Text, View, Platform, TextInput, Button, Alert, ScrollView } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
 class UserOS extends React.Component {
@@ -23,7 +23,7 @@ class UserOS extends React.Component {
 class Card extends React.Component{
   
   render(){
-    ////const navigate = this.props.navigate;
+    //const { navigate } = this.props.navigation;
     return(
       <View>
         <View style={{flexDirection: 'row'}}>
@@ -55,12 +55,12 @@ class Card extends React.Component{
   }
 }
 
- export default class HomeScreen extends React.Component {
+ class HomeScreen extends React.Component {
   static navigationOptions = {
     title: 'Cards',
   };
   render() {
-    const navigate = this.props.navigation;
+    const { navigate } = this.props.navigation;
     return (
       <View style={styles.cards}>
         <View style={{height: 20}} />
@@ -70,7 +70,7 @@ class Card extends React.Component{
           <Card name='' description='' />
           <Text />
           <Button
-          onPress={() => navigate('Profile', {name: 'Tester'})}
+          onPress={() => navigate('Card', {name: this.props.name}, {description: this.props.description})}
           title="Test"
           />
           <Text />
@@ -85,22 +85,19 @@ class CardScreen extends React.Component {
     title: 'Card Screen'
   };
   render() {
-    const navigate = this.props.navigation;
+        const { params } = this.props.navigation.state;
+
     return (
       <View>
-        <Text>One Card</Text>
-        <Button
-          onPress={() => navigate('Home')}
-          title="Back"
-        />
+        <Card style={styles.card} name={params.name} description={params.description}/>
       </View>
     );
   }
 }
 
-const App = StackNavigator({
+const SimpleApp = StackNavigator({
   Home: {screen: HomeScreen},
-  Profile: {screen: CardScreen},
+  Card: {screen: CardScreen},
 });
 
 const styles = StyleSheet.create({
@@ -130,3 +127,5 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
 });
+
+AppRegistry.registerComponent('TestNavigation', () => SimpleApp);
