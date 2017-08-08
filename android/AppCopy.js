@@ -1,21 +1,6 @@
 import React from 'react';
-import { AppRegistry, TouchableHighlight, StyleSheet, Text, View, Platform, TextInput, Button, Alert, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Platform, TextInput, Button, Alert, ScrollView } from 'react-native';
 import { StackNavigator } from 'react-navigation';
-
-
-const data = [
-  {
-    id: 1,
-    name: 'John Doe',
-    description: 'Some description'
-  },
-  {
-    id: 42,
-    name: 'Jane Doe',
-    description: 'Some descrsdfsdfsdf'
-  }
-];
-
 
 class UserOS extends React.Component {
   constructor(props){
@@ -36,17 +21,17 @@ class UserOS extends React.Component {
 }
 
 class Card extends React.Component{
-
+  
   render(){
+    ////const navigate = this.props.navigate;
     return(
-      <TouchableHighlight onPress={this.props.onPress}>
-      <View style={this.props.style}>
+      <View>
         <View style={{flexDirection: 'row'}}>
           <View style={styles.photo} />
           <View style={styles.text}>
             <Text>{this.props.name}</Text>
             <Text>{this.props.description}</Text>
-            {/* <View style={styles.buttons}>
+            <View style={styles.buttons}>
               <Button
                 title="+"
                 onPress={() => {Alert.alert('Add')}}
@@ -62,39 +47,33 @@ class Card extends React.Component{
                 onPress={() => {Alert.alert('Delete')}}
                 color="grey"
               />
-            </View> */}
+            </View>
           </View>
         </View>  
       </View>
-      </TouchableHighlight>
     );
   }
 }
 
-class HomeScreen extends React.Component {
+ export default class HomeScreen extends React.Component {
   static navigationOptions = {
     title: 'Cards',
   };
-
-  handleCardPress(item) {
-    this.props.navigation.navigate('Card', { item });
-  }
-
   render() {
-    const { navigate } = this.props.navigation;
+    const navigate = this.props.navigation;
     return (
-      <View style={styles.home}>
+      <View style={styles.cards}>
         <View style={{height: 20}} />
         <ScrollView style={styles.scroll}>
-          {data.map(item => (
-            <Card
-              key={item.id}
-              style={styles.card}
-              name={item.name}
-              description='-'
-              onPress={() => this.handleCardPress(item)}
-            />
-          ))}
+          <Card style={styles.card} name='Nikita' description='SNT' />
+          <Text />
+          <Card name='' description='' />
+          <Text />
+          <Button
+          onPress={() => navigate('Profile', {name: 'Tester'})}
+          title="Test"
+          />
+          <Text />
         </ScrollView>
       </View>  
     );
@@ -106,40 +85,43 @@ class CardScreen extends React.Component {
     title: 'Card Screen'
   };
   render() {
-        const { params } = this.props.navigation.state;
-
+    const navigate = this.props.navigation;
     return (
       <View>
-        <Card style={styles.card} name={params.item.name} description={params.description}/>
+        <Text>One Card</Text>
+        <Button
+          onPress={() => navigate('Home')}
+          title="Back"
+        />
       </View>
     );
   }
 }
 
-const SimpleApp = StackNavigator({
+const App = StackNavigator({
   Home: {screen: HomeScreen},
-  Card: {screen: CardScreen},
+  Profile: {screen: CardScreen},
 });
 
 const styles = StyleSheet.create({
-  home: {
+  cards: {
     flex: 1,
     height: 100,
     justifyContent: 'space-between',
-    marginTop: 0,
+  },
+  scroll: {
+    //flexWrap: 'wrap',
+    //margin: 10,
   },
   card:{
-    borderWidth: 1,
-    marginTop: 5,
+    borderWidth: 10,
   },
   photo: {
     flex: 20,
-    height: 75,
     backgroundColor: 'blue',
   },
   text: {
     backgroundColor: 'skyblue',
-    height: 75,
     flex: 80,
   },
   buttons: {
@@ -148,5 +130,3 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
 });
-
-export default SimpleApp;

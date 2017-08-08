@@ -1,6 +1,21 @@
 import React from 'react';
-import { AppRegistry, StyleSheet, Text, View, Platform, TextInput, Button, Alert, ScrollView } from 'react-native';
+import { AppRegistry, TouchableHighlight, StyleSheet, Text, View, Platform, TextInput, Button, Alert, ScrollView } from 'react-native';
 import { StackNavigator } from 'react-navigation';
+
+
+const data = [
+  {
+    id: 1,
+    name: 'John Doe',
+    description: 'Some description'
+  },
+  {
+    id: 42,
+    name: 'Jane Doe',
+    description: 'Some descrsdfsdfsdf'
+  }
+];
+
 
 class UserOS extends React.Component {
   constructor(props){
@@ -21,10 +36,10 @@ class UserOS extends React.Component {
 }
 
 class Card extends React.Component{
-  
+
   render(){
-    //const { navigate } = this.props.navigation;
     return(
+      <TouchableHighlight onPress={this.props.onPress}>
       <View>
         <View style={{flexDirection: 'row'}}>
           <View style={styles.photo} />
@@ -51,6 +66,7 @@ class Card extends React.Component{
           </View>
         </View>  
       </View>
+      </TouchableHighlight>
     );
   }
 }
@@ -59,21 +75,27 @@ class Card extends React.Component{
   static navigationOptions = {
     title: 'Cards',
   };
+
+  handleCardPress(id) {
+    this.props.navigation.navigate('Card', { id });
+  }
+
   render() {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.cards}>
         <View style={{height: 20}} />
         <ScrollView style={styles.scroll}>
-          <Card style={styles.card} name='Nikita' description='SNT' />
-          <Text />
-          <Card name='' description='' />
-          <Text />
-          <Button
-          onPress={() => navigate('Card', {name: this.props.name}, {description: this.props.description})}
-          title="Test"
-          />
-          <Text />
+          {data.map(item => (
+            <Card
+              key={item.id}
+              style={styles.card}
+              name={item.name}
+              description='-'
+              onPress={() => this.handleCardPress(item.id)}
+            />
+          ))}
+          
         </ScrollView>
       </View>  
     );
@@ -105,10 +127,6 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 100,
     justifyContent: 'space-between',
-  },
-  scroll: {
-    //flexWrap: 'wrap',
-    //margin: 10,
   },
   card:{
     borderWidth: 10,
