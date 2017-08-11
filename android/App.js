@@ -2,7 +2,8 @@ import React from 'react';
 import { AppRegistry, TouchableHighlight, StyleSheet, Text, View, Platform, TextInput, Button, Alert, ScrollView } from 'react-native';
 import { StackNavigator, NavigationActions } from 'react-navigation';
 import ActionButton from 'react-native-action-button';
-import { createStore } from 'redux';
+import { createStore, combineReducers } from 'redux';
+import { Provider } from 'react-redux'
 
 
 class Card extends React.Component{
@@ -90,12 +91,22 @@ class CardScreen extends React.Component {
 
 
 class EditorScreen extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      firstName: this.props.isEditing ? this.props.item.firstName : '',
+      lastName: this.props.isEditing ? this.props.item.lastName : '',
+      phone: this.props.isEditing ? this.props.item.phone : '',
+      description: this.props.isEditing ? this.props.item.description : '',
+    }
+  }
   static navigationOptions = ({navigation}) => ({
     title: navigation.state.params.title,
     headerRight: 
       <Button
         title="OK"
         onPress={() => {
+          //addCard(inputFN.value, inputLN.value, inputP.value, inputD.value)
           navigation.goBack()
         }}
       />
@@ -105,16 +116,45 @@ class EditorScreen extends React.Component {
     return(
       <View style={params.styles.editorScreen}>
         <View style={{flexDirection: 'row'}}>
-          <Text style={params.styles.header}>Name: </Text>
-          <TextInput placeholder={params.isEditing ? params.item.name:"Name"} style={params.styles.input} />
+          <Text style={params.styles.header}>First Name: </Text>
+          <TextInput
+            placeholder={params.isEditing ? params.item.name:"First Name"}
+            name="inputFN"
+            autoCapitalize="words"
+            style={params.styles.input}
+            onChangeText={(firstName) => this.setState({firstName})}
+          />
         </View>
         <View style={{flexDirection: 'row'}}>
-          <Text style={params.styles.header}>Description: </Text>
-          <TextInput placeholder={params.isEditing ? params.item.shortDescription:"Description"} style={params.styles.input} />
+          <Text style={params.styles.header}>Last Name: </Text>
+          <TextInput
+            placeholder={params.isEditing ? params.item.name:"Last Name"}
+            name="inputLN"
+            autoCapitalize="words"
+            style={params.styles.input}
+            onChangeText={(lastName) => this.setState({lastName})}
+          />
         </View>
         <View style={{flexDirection: 'row'}}>
           <Text style={params.styles.header}>Phone: </Text>
-          <TextInput placeholder={params.isEditing ? params.item.phone:"Phone"} style={params.styles.input} />
+          <TextInput
+            placeholder={params.isEditing ? params.item.phone:"Phone"}
+            name="inputP"
+            autoCapitalize="words"
+            keyboardType="phone-pad"
+            style={params.styles.input}
+            onChangeText={(phone) => this.setState({phone})}
+          />
+        </View>
+        <View style={{flexDirection: 'row'}}>
+          <Text style={params.styles.header}>Description: </Text>
+          <TextInput
+            placeholder={params.isEditing ? params.item.shortDescription:"Description"}
+            name="inputD"
+            autoCapitalize="words"
+            style={params.styles.input}
+            onChangeText={(description) => this.setState({description})}
+          />
         </View>
       </View>
     );
@@ -136,6 +176,15 @@ const ScreenNavigator = StackNavigator({
   
 });
 
+class App extends React.Component{
+  render(){
+    return(
+      <Provider store={store}>
+         <ScreenNavigator /> 
+      </Provider>
+    );
+  }
+} 
 
 
 
@@ -209,7 +258,7 @@ const styles = StyleSheet.create({
 
 
 
-let store = createStore(cards)
+let store = createStore(combineReducers({cards, inputs}))
 
 function cards(state = [], action) {
   switch (action.type) {
@@ -230,7 +279,31 @@ function cards(state = [], action) {
   }
 }
 
+function inputs(state = [], action) {
+  switch (action.type){
+    case 'PASS_INPUTS':
+      return state
+    default:
+      return state
+  }
+}
 
+function addCard(fn, ln, p, d) {
+  return {
+    type: ADD_CARD,
+    fn, ln, p, d
+  }
+}
+
+/*
+Card:
+id
+First Name
+Last Name
+Phone
+Description
+Initials
+*/
 
 const data = [
   {
@@ -292,4 +365,4 @@ const data = [
   },
 ];
 
-export default ScreenNavigator;
+export default App;
